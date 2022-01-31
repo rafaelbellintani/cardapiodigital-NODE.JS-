@@ -1,0 +1,30 @@
+<header>
+  <img class="presentImage" src="/img/restaurante1.jpg" alt="Restaurante 1">
+</header>
+<h3 class="titleCardapio">Cardápio Digital</h3>
+<div class="tableContainer container">
+
+  {{#each categories}}
+      <h1 class="titleProducts">{{this.name}}</h1>
+  <table class="table produtos">
+    {{#each ../products}}
+      {{#when this.category 'eq' ../this.name}} 
+        <tr>
+          <td class="productRow">
+            <p class="productName">{{../this.name}}</p>
+            <p class="productDescription">{{../this.description}}</p>
+            <p class="productPrice">R$ {{../this.price}}</p>
+          </td>
+          <td class="imageProduct">
+            Imagem
+          </td>
+        </tr>
+      {{/when}}
+  {{/each}}
+  </table>
+{{/each}}
+ 
+
+</div>
+
+{{>footer}}

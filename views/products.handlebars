@@ -1,0 +1,216 @@
+s{{>headerAdmin}}
+
+<div class="dataForm">
+    <form class="formProducts" id="formNewProducts" name="formNewProducts" method="POST">
+    <div>
+        <label>Nome:</label>
+        <input type="text" name="name" id="name">
+        <label>Preço:</label>
+        <input type="text" name="price" id="price"><br><br>
+    </div>
+    <label for="category">Escolha uma categoria:</label><br>
+    <select name="category" id="category">
+        {{#each categories}}
+        <option value="{{this.name}}">{{this.name}}</option>
+        {{/each}}
+    </select><button type="button" id="newCategory" class="btn btn-primary" data-toggle="modal" data-target="#modalNewCategory">Nova</button><button type="button" id="removeCategory" class="btn btn-danger" data-toggle="modal" data-target="#modalDeleteCategory">Deletar categoria</button><br><br><br><br>
+    <label>Descrição:</label><br>
+    <textarea name="description" id="description"></textarea><br>
+    <button type="submit" class="btn btn-primary" form="formNewProducts">Cadastrar</button>
+</form>
+</div>
+
+<!-- Modal REMOVER CATEGORIA-->
+<div class="modal fade" id="modalDeleteCategory" tabindex="-1" role="dialog" aria-labelledby="modalDeleteCategory" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalDeleteCategoryLongTitle">Nova categoria</h5>
+      </div>
+      <div class="modal-body">
+        <div class="dataFormModal">
+            <form id="FormDeleteCategory" name="FormDeleteCategory" method="POST" action="deletarcategoria">
+              <select name="categoryDelete" id="categoryDelete">
+                {{#each categories}}
+                  <option value="{{this._id}}">{{this.name}}</option>
+                {{/each}}
+              </select>
+            </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+        <button id="submitFormCategory" type="submit" class="btn btn-danger" form="FormDeleteCategory" value="">Deletar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal ADICIONAR CATEGORIA-->
+<div class="modal fade" id="modalNewCategory" tabindex="-1" role="dialog" aria-labelledby="modalNewCategory" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalNewCategoryLongTitle">Nova categoria</h5>
+      </div>
+      <div class="modal-body">
+        <div class="dataFormModal">
+            <form id="FormCategory" name="FormCategory" method="POST" action="novacategoria">
+                <label>Nome</label><br>
+                <input id="category" name="category" type="text">
+            </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+        <button id="submitFormCategory" type="submit" class="btn btn-danger" form="FormCategory" value="">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="modalEditTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalEditLongTitle">Editar</h5>
+      </div>
+      <div class="modal-body">
+        <div class="dataFormModal">
+            <form id="formProductModal" class="formProductModal" method="POST" action="/sistema/editar">
+            <div>
+                <label>Nome:</label>
+                <input type="text" name="nameModal" id="nameModal"><br><br>
+                <label>Preço:</label>
+                <input type="text" name="priceModal" id="priceModal"><br><br>
+            </div><br>
+            <label for="categoryModal">Categoria:</label><br>
+            <select name="categoryModal" id="categoryModal">
+                {{#each categories}}
+                <option value="{{this.name}}">{{this.name}}</option>
+                {{/each}}
+            </select><br><br>
+            <label>Descrição:</label><br>
+            <textarea name="descriptionModal" id="descriptionModal"></textarea><br>
+            <input id="idModal" name="idModal" type="hidden">
+            </form>
+            <form id="formDelete" name="formDelete" type="hidden">
+              <input id="idModalDelete" name="idModalDelete" type="hidden">
+            </form>
+            
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="submitForm" type="submit" class="btn btn-light" form="formProductModal">Editar</button>
+        <button id="removeButton" type="submit" class="btn btn-danger" form="formDelete">Deletar</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="tableContainer">
+    <table class="table produtos">
+        <thead>
+            <tr>
+                <th scope="col">Imagem</th>
+                <th scope="col">Informações</th>
+                <th scope="col">Categoria</th>
+                <th scope="col">Opções</th>
+            </tr>
+        </thead>
+    {{#each products}}
+    <tr>
+        <td>
+        Imagem
+        </td>
+        <td class="productData">
+        <p class="productName">{{this.name}}</p>
+        <p class="productDescription">{{this.description}}</p>
+        <p class="productPrice">R$ {{this.price}}</p>
+        <input id="productId" type="hidden" value="{{this._id}}">
+        </td>
+        <td class="category">
+            <p class="productCategoria">{{this.category}}</p>
+        </td>
+        <td class="options">
+            <button type="button" id="editForm" class="btn btn-primary" data-toggle="modal" data-target="#modalEdit">Editar</button>
+        </td>
+    </tr>
+    {{/each}}
+    </table>
+</div>
+<script>
+   
+
+
+$(document).ready(function(){
+ $( "button#editForm" ).click(function() {
+        var nome = $(this).parent().parent().find(".productData").children(".productName").text();
+        var preco = $(this).parent().parent().find(".productData").children(".productPrice").text().replace("R$","");
+        var descricao = $(this).parent().parent().find(".productData").children(".productDescription").text(); 
+        var id = $(this).parent().parent().find(".productData").children("#productId").val(); 
+        var categoria = $(this).parent().parent().find(".category").children(".productCategoria").text(); 
+
+        $("#nameModal").val(nome);
+        $("#priceModal").val(preco);
+        $("#descriptionModal").val(descricao);
+        $("#idModal").val(id);
+        $("#idModalDelete").val(id);
+        $("#categoryModal").val(categoria).change();
+        $("#removeButton").val(id);
+    });
+
+  $( "#formNewProducts" ).submit(function(e){
+    e.preventDefault();
+    var nome = $("#name").val();
+    var preco = $("#price").val();
+    var categoria = $("#category").val();
+    var descricao =  $("#description").val();
+    $.ajax({
+            url: "/sistema/produtos",
+            data: JSON.stringify({name: nome, price: preco, category:categoria,description: descricao}),
+            type: 'POST',
+            processData: false,
+            contentType: "application/json",
+            success: function (response) {
+              alert("Produto salvo!");
+              $( "#formNewProducts" ).trigger("reset");
+              location.reload();
+            }
+        });
+  }
+  );
+
+  $( "#formDelete" ).submit(function(e){
+    e.preventDefault();
+    var idProduct = $(this).children( "#idModalDelete" ).val();
+    $.ajax({
+      url: "/sistema/removerproduto",
+      data: JSON.stringify({idProduto: idProduct}),
+      type: 'POST',
+      processData: false,
+      contentType: "application/json",
+      success: function(response){
+        alert("Produto removido com sucesso!");
+        location.reload();
+      }
+    });
+  });
+
+  $(document).on('input','#price',function(event) {
+                if (this.value.length === 1) {this.value = '0'+this.value;}
+                this.value = parseFloat(this.value.replace(/[^\d]/g,'').replace(/(\d\d?)$/,'.$1')).toFixed(2);
+            });
+
+  $(document).on('input','#priceModal',function(event) {
+      if (this.value.length === 1) {this.value = '0'+this.value;}
+      this.value = parseFloat(this.value.replace(/[^\d]/g,'').replace(/(\d\d?)$/,'.$1')).toFixed(2);
+  });
+
+})
+
+    
+
+</script>
